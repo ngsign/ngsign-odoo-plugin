@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_ngsign_send_wizard_form" model="ir.ui.view">
+        <field name="name">ngsign.send.wizard.form</field>
+        <field name="model">ngsign.send.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Send to NGSign">
+                <group>
+                    <group string="Document">
+                        <field name="attachment_id"
+                               invisible="pdf_file"
+                               options="{'no_create': True}"/>
+                        <field name="pdf_file" filename="pdf_filename"
+                               invisible="attachment_id"/>
+                        <field name="pdf_filename" invisible="1"/>
+                        <field name="res_model" invisible="1"/>
+                        <field name="res_id" invisible="1"/>
+                    </group>
+                    <group string="Signer">
+                        <field name="signer_firstname"/>
+                        <field name="signer_lastname"/>
+                        <field name="signer_email" widget="email"/>
+                        <field name="signer_phone" widget="phone"/>
+                    </group>
+                </group>
+                <group>
+                    <group string="Signature options">
+                        <field name="sig_type"/>
+                        <field name="mode"/>
+                        <field name="otp"/>
+                    </group>
+                    <group string="Visible signature position">
+                        <field name="choose_position"/>
+                        <field name="page" invisible="choose_position"/>
+                        <field name="x_axis" invisible="choose_position"/>
+                        <field name="y_axis" invisible="choose_position"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_send" type="object" string="Send for signature"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Opened from the NGSign menu -->
+    <record id="action_ngsign_send_wizard" model="ir.actions.act_window">
+        <field name="name">New Signature</field>
+        <field name="res_model">ngsign.send.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- "Send to NGSign" contextual action on any PDF attachment -->
+    <record id="action_ngsign_send_from_attachment" model="ir.actions.act_window">
+        <field name="name">Send to NGSign</field>
+        <field name="res_model">ngsign.send.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="base.model_ir_attachment"/>
+        <field name="binding_view_types">list,form</field>
+    </record>
+
+</odoo>

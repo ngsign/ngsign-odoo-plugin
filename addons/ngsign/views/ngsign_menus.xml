@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_ngsign_root" name="NGSign" sequence="90"
+              web_icon="ngsign,static/description/icon.png"/>
+
+    <menuitem id="menu_ngsign_new" name="New Signature"
+              parent="menu_ngsign_root" action="action_ngsign_send_wizard"
+              sequence="10"/>
+
+    <menuitem id="menu_ngsign_transactions" name="Transactions"
+              parent="menu_ngsign_root" action="action_ngsign_transactions"
+              sequence="20"/>
+
+    <menuitem id="menu_ngsign_config" name="Configuration"
+              parent="menu_ngsign_root" action="action_ngsign_config_settings"
+              sequence="90" groups="base.group_system"/>
+</odoo>

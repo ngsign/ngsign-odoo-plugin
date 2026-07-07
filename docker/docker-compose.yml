@@ -1,0 +1,58 @@
+# NGSign Odoo plugin — local POC stack.
+#   db          : PostgreSQL
+#   ngsign-mock : in-memory NGSign API mock (stdlib, no build)
+#   odoo        : Odoo 17.0 with the addon mounted from ../addons
+#
+# Usage:
+#   docker compose up -d
+#   open http://localhost:8069  (create DB, install "NGSign Electronic Signature")
+#   NGSign settings -> base URL = http://ngsign-mock:8080 , token = anything
+#
+# The mock is also exposed on the host at http://localhost:8090 for scripts/e2e_smoke.py
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+    volumes:
+      - odoo-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "odoo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ngsign-mock:
+    image: python:3.11-slim
+    command: python /app/mock_server.py
+    environment:
+      PORT: "8080"
+    volumes:
+      - ./ngsign_mock:/app:ro
+    ports:
+      - "8090:8080"
+
+  odoo:
+    image: odoo:17.0
+    depends_on:
+      db:
+        condition: service_healthy
+      ngsign-mock:
+        condition: service_started
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - ../addons:/mnt/extra-addons:ro
+      - odoo-data:/var/lib/odoo
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+
+volumes:
+  odoo-db:
+  odoo-data:

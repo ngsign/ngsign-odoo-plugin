@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_order_form_ngsign" model="ir.ui.view">
+        <field name="name">sale.order.form.ngsign</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Header (left): send / refresh buttons, as prominent actions -->
+            <xpath expr="//header/button[1]" position="before">
+                <button name="action_ngsign_send_for_signature" type="object"
+                        string="Envoyer pour signature client" class="btn-primary"
+                        invisible="state not in ('draft', 'sent') or ngsign_status in ('SENT', 'LAUNCHED')"/>
+                <button name="action_ngsign_refresh" type="object"
+                        string="Rafraîchir la signature"
+                        invisible="ngsign_status not in ('SENT', 'LAUNCHED')"/>
+            </xpath>
+
+            <!-- Header (right): waiting/signed status badge next to the statusbar -->
+            <xpath expr="//header/field[@name='state']" position="before">
+                <field name="ngsign_transaction_id" invisible="1"/>
+                <field name="ngsign_status" widget="badge"
+                       invisible="not ngsign_transaction_id"
+                       decoration-warning="ngsign_status in ('SENT', 'LAUNCHED')"
+                       decoration-success="ngsign_status == 'SIGNED'"
+                       decoration-danger="ngsign_status in ('REJECTED', 'ERROR')"/>
+            </xpath>
+
+            <!-- Smart button to open the transaction -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" icon="fa-pencil-square-o"
+                        name="action_ngsign_open_transaction" type="object"
+                        invisible="not ngsign_transaction_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Signature</span>
+                        <field name="ngsign_status" class="o_stat_value" nolabel="1"/>
+                    </div>
+                </button>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

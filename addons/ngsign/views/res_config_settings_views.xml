@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_ngsign" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.ngsign</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="NGSign" string="NGSign" name="ngsign"
+                     logo="/ngsign/static/description/icon.png">
+                    <block title="Server connection" name="ngsign_server_block">
+                        <setting string="NGSign server URL"
+                                 help="Base URL of the NGSign platform (without /server).">
+                            <field name="ngsign_base_url"
+                                   placeholder="https://sandbox.ng-sign.com"/>
+                        </setting>
+                        <setting string="API token"
+                                 help="Bearer token generated from the NGSign web app.">
+                            <field name="ngsign_token" password="True"
+                                   placeholder="Bearer token"/>
+                        </setting>
+                        <setting string="API base path"
+                                 help="Context path of the NGSign REST API. Default '/server'. Change only if your instance differs.">
+                            <field name="ngsign_api_base_path" placeholder="/server"/>
+                        </setting>
+                    </block>
+                    <block title="Defaults" name="ngsign_defaults_block">
+                        <setting string="Default signature type">
+                            <field name="ngsign_default_sig_type"/>
+                        </setting>
+                        <setting string="Default signature mode">
+                            <field name="ngsign_default_mode"/>
+                        </setting>
+                    </block>
+                    <block title="Signature position" name="ngsign_position_block">
+                        <setting string="Let the signer place the signature"
+                                 help="Off (default): the position below is applied automatically, so the signer just signs.">
+                            <field name="ngsign_choose_position"/>
+                        </setting>
+                        <setting string="Fixed position"
+                                 invisible="ngsign_choose_position"
+                                 help="Applied when the signer does not place the signature.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <label for="ngsign_default_page" string="Page" class="col-3 o_light_label"/>
+                                    <field name="ngsign_default_page"/>
+                                </div>
+                                <div class="row">
+                                    <label for="ngsign_default_x" string="X" class="col-3 o_light_label"/>
+                                    <field name="ngsign_default_x"/>
+                                </div>
+                                <div class="row">
+                                    <label for="ngsign_default_y" string="Y" class="col-3 o_light_label"/>
+                                    <field name="ngsign_default_y"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_ngsign_config_settings" model="ir.actions.act_window">
+        <field name="name">NGSign Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'ngsign'}</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_ngsign_transaction_tree" model="ir.ui.view">
+        <field name="name">ngsign.transaction.tree</field>
+        <field name="model">ngsign.transaction</field>
+        <field name="arch" type="xml">
+            <tree string="NGSign Transactions"
+                  decoration-success="status == 'SIGNED'"
+                  decoration-muted="status in ('CANCELLED','EXPIRED')"
+                  decoration-danger="status in ('REJECTED','ERROR')">
+                <field name="create_date"/>
+                <field name="name"/>
+                <field name="signer_email"/>
+                <field name="mode"/>
+                <field name="sig_type"/>
+                <field name="status"/>
+                <field name="signed_attachment_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_ngsign_transaction_form" model="ir.ui.view">
+        <field name="name">ngsign.transaction.form</field>
+        <field name="model">ngsign.transaction</field>
+        <field name="arch" type="xml">
+            <form string="NGSign Transaction">
+                <header>
+                    <button name="action_poll" type="object" string="Poll status now"
+                            class="btn-primary"
+                            invisible="status in ('SIGNED','REJECTED','CANCELLED','EXPIRED')"/>
+                    <button name="action_cancel" type="object" string="Cancel signature"
+                            confirm="Cancel this signature transaction on NGSign?"
+                            invisible="status in ('SIGNED','CANCELLED','EXPIRED')"/>
+                    <button name="action_simulate_mock_sign" type="object"
+                            string="Simulate signature (mock)" class="btn-secondary"
+                            invisible="status in ('SIGNED','REJECTED','CANCELLED','EXPIRED')"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="SENT,LAUNCHED,SIGNED"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Transaction UUID"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Signer">
+                            <field name="signer_firstname"/>
+                            <field name="signer_lastname"/>
+                            <field name="signer_email"/>
+                            <field name="signer_phone"/>
+                        </group>
+                        <group string="Signature">
+                            <field name="sig_type"/>
+                            <field name="mode"/>
+                            <field name="document_identifier"/>
+                            <field name="signing_url" widget="url"
+                                   invisible="not signing_url"/>
+                        </group>
+                    </group>
+                    <group string="Documents">
+                        <field name="source_attachment_id"/>
+                        <field name="signed_attachment_id"/>
+                    </group>
+                    <group string="Source record" invisible="not res_model">
+                        <field name="res_model"/>
+                        <field name="res_id"/>
+                    </group>
+                    <group string="Last error" invisible="not last_error">
+                        <field name="last_error" nolabel="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ngsign_transaction_search" model="ir.ui.view">
+        <field name="name">ngsign.transaction.search</field>
+        <field name="model">ngsign.transaction</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="signer_email"/>
+                <filter name="pending" string="Pending"
+                        domain="[('status','in',('SENT','LAUNCHED'))]"/>
+                <filter name="signed" string="Signed"
+                        domain="[('status','=','SIGNED')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_status" string="Status"
+                            context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_ngsign_transactions" model="ir.actions.act_window">
+        <field name="name">NGSign Transactions</field>
+        <field name="res_model">ngsign.transaction</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_ngsign_transaction_search"/>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiley_face">No signature transaction yet</p>
+            <p>Use <b>NGSign &gt; New Signature</b> to send a PDF for signature.</p>
+        </field>
+    </record>
+
+</odoo>
