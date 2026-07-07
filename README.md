@@ -75,16 +75,6 @@ automated validations (`scripts/e2e_smoke.py` and the Odoo test).
   automatically. Depends on `ngsign_sale`, `sale_management`; auto-installs when
   both are present. Without a template, the global NGSign position settings apply.
 
-### Sales demo (POC)
-
-Sales → open a quotation whose customer has an email → **Envoyer pour signature
-client** → confirm the wizard → the order shows *En attente de signature*. To
-simulate the customer signing on the mock: click the **Signature** smart button →
-on the transaction click **Simulate signature (mock)** → back on the order click
-**Rafraîchir la signature** → status becomes *Signed* and the `SIGNED_*.pdf` is
-attached to the order. Against a real NGSign server the customer signs via the
-email/link instead.
-
 ## How it maps to the NGSign API
 
 | Step | NGSign web service | Client method |
@@ -107,8 +97,10 @@ against a real NGSign instance is a config change (URL + token). See
 
 ## Requirements
 
-Odoo Community 17.0 · Python `requests` (shipped with Odoo) · an NGSign account
-with an API token and the "transaction" feature enabled (for real use).
+- Odoo Community 17.0, Python `requests` (shipped with Odoo)
+- An NGSign account with an API token and the "transaction" feature enabled.
+
+Do not hesitate to contact NGSign (contact@ng-sign.com) or your NGSign integrator to get started.
 
 ## License
 
